@@ -1,0 +1,33 @@
+{
+  "title": "Counter",
+  "description": "void",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 0,
+  "runnable": 1,
+  "author": "Joubel AS",
+  "license": "cc-by-sa",
+  "machineName": "H5P.Counter",
+  "preloadedCss": [
+    {
+      "path": "css/counter.css"
+    }
+  ],
+  "preloadedJs": [
+    {
+      "path": "js/counter.js"
+    }
+  ],
+  "preloadedDependencies": [
+    {
+      "machineName": "FontAwesome",
+      "majorVersion": 4,
+      "minorVersion": 1
+    },
+    {
+      "machineName": "H5P.JoubelUI",
+      "majorVersion": 1,
+      "minorVersion": 0
+    }
+  ]
+}

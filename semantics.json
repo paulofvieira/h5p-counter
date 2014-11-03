@@ -1,0 +1,190 @@
+[
+  {
+    "label": "Counter title",
+    "name": "title",
+    "type": "text",
+    "placeholder": "Christmas countdown!",
+    "description": "Make a title for the timer.",
+    "optional": true
+  },
+  {
+  "label": "Textfield",
+  "name": "textField",
+  "type": "text",
+  "widget": "textarea",
+  "placeholder": "You chose date @chosenDate. There is @counter left until that date.",
+  "description": "Text to go with the counter, @counter specifies the time variable. Other variables: @chosenDate, @months, @weeks, @days, @hours, @minutes, @seconds.",
+  "optional": true
+  },
+  {
+    "label": "Count Up",
+    "name": "countUp",
+    "type": "boolean",
+    "description" : "Check to count up from date, instead of down to date.",
+    "default": false,
+    "optional": false
+  },
+  {
+    "name": "minute",
+    "type": "number",
+    "label": "Minute",
+    "description": "Select the minute to count up from or down to.",
+    "min": 0,
+    "max": 60,
+    "step": 1,
+    "default": 0
+  },
+  {
+    "name": "hour",
+    "type": "number",
+    "label": "Hour",
+    "description": "Select the hour to count up from or down to, 24 hour format.",
+    "min": 0,
+    "max": 24,
+    "step": 1,
+    "default": 0
+  },
+  {
+    "name": "day",
+    "type": "number",
+    "label": "Day of month",
+    "description": "Select the day of the month to count up from or down to.",
+    "min": 1,
+    "max": 31,
+    "step": 1,
+    "default": 24
+  },
+  {
+    "name": "month",
+    "label": "Select month",
+    "type": "select",
+    "description": "Select the month to count up from or down to.",
+    "options": [
+      {
+        "label": "January",
+        "value": "01"
+      },
+      {
+        "label": "February",
+        "value": "02"
+      },
+      {
+        "label": "Mars",
+        "value": "03"
+      },
+      {
+        "label": "April",
+        "value": "04"
+      },
+      {
+        "label": "May",
+        "value": "05"
+      },
+      {
+        "label": "June",
+        "value": "06"
+      },
+      {
+        "label": "July",
+        "value": "07"
+      },
+      {
+        "label": "August",
+        "value": "08"
+      },
+      {
+        "label": "September",
+        "value": "09"
+      },
+      {
+        "label": "October",
+        "value": "10"
+      },
+      {
+        "label": "November",
+        "value": "11"
+      },
+      {
+        "label": "December",
+        "value": "12"
+      }
+    ],
+    "default": "12"
+  },
+  {
+    "name": "year",
+    "type": "number",
+    "label": "Year",
+    "description": "Select the year to count up from or down to.",
+    "min": 2014,
+    "max": 2999,
+    "step": 1,
+    "default": 2014
+  },
+  {
+    "name": "backgroundImage",
+    "type": "image",
+    "label": "Background image",
+    "optional": true,
+    "description": "An optional background image for the Counter."
+  },
+  {
+    "label": "Show months",
+    "name": "enableMonths",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Show weeks",
+    "name": "enableWeeks",
+    "type": "boolean",
+    "default": false,
+    "optional": true
+  },
+  {
+    "label": "Show days",
+    "name": "enableDays",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Show hours",
+    "name": "enableHours",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Show minutes",
+    "name": "enableMinutes",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Show seconds",
+    "name": "enableSeconds",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Short format",
+    "description": "Displays the short format for the date. For example: 2d, 3h and 4m left.",
+    "name": "enableShortFormat",
+    "type": "boolean",
+    "default": false,
+    "optional": true
+  },
+  {
+    "label": "Countdown finished text",
+    "name": "finishedText",
+    "type": "text",
+    "widget": "textarea",
+    "placeholder": "Countdown is done, hurray!",
+    "description": "This text is displayed when a countdown has finished.",
+    "optional": true
+  }
+]
