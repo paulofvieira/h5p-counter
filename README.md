@@ -1,7 +1,7 @@
-H5P Mark The Words
+H5P Counter
 ==========
 
-Test your users by making them select the correct words from a text.
+Set up a counter to count down to, or up to a special occasion.
 
 ## License
 

@@ -41,7 +41,6 @@ H5P.Counter = (function ($) {
   }
 
   C.prototype.attach = function ($container) {
-    console.log(this);
     var self = this;
     self.$inner = $container.html('<div><div>' + self.params.title + '</div></div>').children();
     self.$countdown = $('<div></div>').appendTo(this.$inner);
@@ -53,17 +52,17 @@ H5P.Counter = (function ($) {
     // variables for time units
     var months, weeks, days, hours, minutes, seconds;
 
-    if (self.params.backgroundImage && self.params.backgroundImage.path) {
+/*    if (self.params.backgroundImage && self.params.backgroundImage.path) {
       this.$image = $('<img/>', {
         'class': 'h5p-image-background',
         src: H5P.getPath(self.params.backgroundImage, self.id)
       }).css({width: self.initialWidth, height: height}).appendTo(this.$inner);
-    }
+    }*/
 
     //replace variable chosenDate
     self.params.textField = self.params.textField.replace(/@chosenDate/g, targetDate.toDateString());
 
-
+    targetDate = targetDate.getTime();
     // update the countdown timer every second.
     var myCounter = setInterval(updateClock, 1000);
 
@@ -71,7 +70,7 @@ H5P.Counter = (function ($) {
       // find the amount of "seconds" between now and target
       var currentDate = new Date().getTime();
       //Counting up or down.
-      var secondsLeft = self.params.countUp ? (currentDate - currentDate) / 1000 :(currentDate - currentDate) / 1000;
+      var secondsLeft = self.params.countUp ? (currentDate - targetDate) / 1000 :(targetDate - currentDate) / 1000;
       if (secondsLeft <= 0) {
         if (!self.params.countUp) {
           secondsLeft = 0;
@@ -142,9 +141,6 @@ H5P.Counter = (function ($) {
       self.$countdown.html(htmlCounter);
     }
 
-    function calculateTimeUnit(timeUnit, secondsMultiple, shortForm, longForm) {
-
-    }
 
     function setFinishedText() {
       //When countdown is done, display finished text, if it has been specified.
