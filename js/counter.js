@@ -5,6 +5,14 @@ var H5P = H5P || {};
  * @external {jQuery} $ H5P.jQuery
  */
 H5P.Counter = (function ($) {
+  // CSS Classes:
+  var MAIN_CONTAINER = 'h5p-counter';
+  var IMAGE_CONTAINER = 'h5p-counter-image-container';
+  var COUNTDOWN_CONTAINER = 'h5p-counter-countdown-container';
+
+  // CSS subclasses
+  var IMAGE_BACKGROUND = 'h5p-counter-image-background';
+  var OVER_IMAGE = 'h5p-counter-on-image';
 
   /**
    * Initialize module.
@@ -21,20 +29,14 @@ H5P.Counter = (function ($) {
       title: "Christmas countdown",
       textField: "There is only @time left until christmas!",
       countUp: false,
-      minute: 0,
-      hour: 0,
-      day: 24,
-      month: 12,
-      year: 2014,
-      backgroundImage: null,
-      enableYears: true,
-      enableMonths: true,
+      date: null,
+      imageGroup: null,
+      enableMonths: false,
       enableWeeks: false,
       enableDays: true,
       enableHours: true,
       enableMinutes: true,
       enableSeconds: true,
-      enableMilliseconds: false,
       enableShortFormat: false,
       finishedText: ''
     }, params);
@@ -42,22 +44,31 @@ H5P.Counter = (function ($) {
 
   C.prototype.attach = function ($container) {
     var self = this;
-    self.$inner = $container.html('<div><div>' + self.params.title + '</div></div>').children();
-    self.$countdown = $('<div></div>').appendTo(this.$inner);
+    self.$inner = $container.addClass(MAIN_CONTAINER)
+        .html('<div><div>' + self.params.title + '</div></div>')
+        .children();
 
     // set the date we're counting down to, or up from.
-    var targetDate = new Date(this.params.year, parseInt(this.params.month)-1, this.params.day,
-    this.params.hour, this.params.minute, 0, 0);
+    var targetDate = new Date(self.params.date.year, parseInt(self.params.date.month)-1, self.params.date.day,
+    self.params.date.hour, self.params.date.minute, 0, 0);
 
     // variables for time units
-    var months, weeks, days, hours, minutes, seconds;
+    var months, weeks, days, hours, minutes, seconds = 0;
+    self.$imageContainer = $('<div/>', {
+      'class': IMAGE_CONTAINER
+    }).appendTo(self.$inner);
 
-/*    if (self.params.backgroundImage && self.params.backgroundImage.path) {
-      this.$image = $('<img/>', {
-        'class': 'h5p-image-background',
-        src: H5P.getPath(self.params.backgroundImage, self.id)
-      }).css({width: self.initialWidth, height: height}).appendTo(this.$inner);
-    }*/
+    self.$countdown = $('<div/>', {
+      'class': COUNTDOWN_CONTAINER
+    }).appendTo(self.$imageContainer);
+
+
+    if (self.params.imageGroup.backgroundImage && self.params.imageGroup.backgroundImage.path) {
+      attachImage();
+      self.$countdown.addClass(OVER_IMAGE)
+          .css({top: self.params.imageGroup.yPos + '%',
+            left: self.params.imageGroup.xPos + '%'});
+    }
 
     //replace variable chosenDate
     self.params.textField = self.params.textField.replace(/@chosenDate/g, targetDate.toDateString());
@@ -82,11 +93,11 @@ H5P.Counter = (function ($) {
       var shortFormat = '';
       var longFormat = '';
 
-      // do some time calculations
       if (self.params.enableMonths) {
         months = parseInt(secondsLeft / 2592000);
         secondsLeft = secondsLeft % 2592000;
         longFormat += months+' Months, ';
+
         shortFormat += months+'m, ';
       }
 
@@ -141,7 +152,6 @@ H5P.Counter = (function ($) {
       self.$countdown.html(htmlCounter);
     }
 
-
     function setFinishedText() {
       //When countdown is done, display finished text, if it has been specified.
       if (self.params.finishedText !== '') {
@@ -149,6 +159,14 @@ H5P.Counter = (function ($) {
       }
     }
 
+    function attachImage() {
+      self.initialWidth = $container.width();
+      var height = (self.initialWidth/self.params.imageGroup.backgroundImage.width)*self.params.imageGroup.backgroundImage.height;
+      this.$image = $('<img/>', {
+        'class': IMAGE_BACKGROUND,
+        src: H5P.getPath(self.params.imageGroup.backgroundImage.path, self.id)
+      }).css({width: self.initialWidth, height: height}).appendTo(self.$imageContainer);
+    }
   };
 
     return C;

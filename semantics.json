@@ -8,13 +8,25 @@
     "optional": true
   },
   {
-  "label": "Textfield",
-  "name": "textField",
-  "type": "text",
-  "widget": "textarea",
-  "placeholder": "You chose date @chosenDate. There is @counter left until that date.",
-  "description": "Text to go with the counter, @counter specifies the time variable. Other variables: @chosenDate, @months, @weeks, @days, @hours, @minutes, @seconds.",
-  "optional": true
+    "label": "Textfield",
+    "name": "textField",
+    "type": "text",
+    "placeholder": "You chose date @chosenDate. There is @counter left until that date.",
+    "description": "Text to go with the counter, @counter specifies the time variable. Other variables: @chosenDate, @months, @weeks, @days, @hours, @minutes, @seconds.",
+    "widget": "html",
+    "enterMode": "p",
+    "tags": [
+      "strong",
+      "em",
+      "u",
+      "a",
+      "ul",
+      "ol",
+      "h2",
+      "h3",
+      "hr"
+    ],
+    "optional": true
   },
   {
     "label": "Count Up",
@@ -25,114 +37,151 @@
     "optional": false
   },
   {
-    "name": "minute",
-    "type": "number",
-    "label": "Minute",
-    "description": "Select the minute to count up from or down to.",
-    "min": 0,
-    "max": 60,
-    "step": 1,
-    "default": 0
-  },
-  {
-    "name": "hour",
-    "type": "number",
-    "label": "Hour",
-    "description": "Select the hour to count up from or down to, 24 hour format.",
-    "min": 0,
-    "max": 24,
-    "step": 1,
-    "default": 0
-  },
-  {
-    "name": "day",
-    "type": "number",
-    "label": "Day of month",
-    "description": "Select the day of the month to count up from or down to.",
-    "min": 1,
-    "max": 31,
-    "step": 1,
-    "default": 24
-  },
-  {
-    "name": "month",
-    "label": "Select month",
-    "type": "select",
-    "description": "Select the month to count up from or down to.",
-    "options": [
+    "name": "date",
+    "type": "group",
+    "label": "Date to count down to, or up from.",
+    "fields": [
       {
-        "label": "January",
-        "value": "01"
+        "name": "hour",
+        "type": "number",
+        "label": "Hour",
+        "description": "Select the hour of the date, 24hour format.",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 0
       },
       {
-        "label": "February",
-        "value": "02"
+        "name": "minute",
+        "type": "number",
+        "label": "Minute",
+        "description": "Select the minute of the date.",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "default": 0
       },
       {
-        "label": "Mars",
-        "value": "03"
+        "name": "day",
+        "type": "number",
+        "label": "Day of month",
+        "description": "Select the day of the month.",
+        "min": 1,
+        "max": 31,
+        "step": 1,
+        "default": 24
       },
       {
-        "label": "April",
-        "value": "04"
+        "name": "month",
+        "label": "Select month",
+        "type": "select",
+        "description": "Select the month to count up from or down to.",
+        "options": [
+          {
+            "label": "January",
+            "value": "01"
+          },
+          {
+            "label": "February",
+            "value": "02"
+          },
+          {
+            "label": "Mars",
+            "value": "03"
+          },
+          {
+            "label": "April",
+            "value": "04"
+          },
+          {
+            "label": "May",
+            "value": "05"
+          },
+          {
+            "label": "June",
+            "value": "06"
+          },
+          {
+            "label": "July",
+            "value": "07"
+          },
+          {
+            "label": "August",
+            "value": "08"
+          },
+          {
+            "label": "September",
+            "value": "09"
+          },
+          {
+            "label": "October",
+            "value": "10"
+          },
+          {
+            "label": "November",
+            "value": "11"
+          },
+          {
+            "label": "December",
+            "value": "12"
+          }
+        ],
+        "default": "12"
       },
       {
-        "label": "May",
-        "value": "05"
-      },
-      {
-        "label": "June",
-        "value": "06"
-      },
-      {
-        "label": "July",
-        "value": "07"
-      },
-      {
-        "label": "August",
-        "value": "08"
-      },
-      {
-        "label": "September",
-        "value": "09"
-      },
-      {
-        "label": "October",
-        "value": "10"
-      },
-      {
-        "label": "November",
-        "value": "11"
-      },
-      {
-        "label": "December",
-        "value": "12"
+        "name": "year",
+        "type": "number",
+        "label": "Year",
+        "description": "Select the year to count up from or down to.",
+        "min": 2014,
+        "max": 2999,
+        "step": 1,
+        "default": 2014
       }
-    ],
-    "default": "12"
+    ]
   },
   {
-    "name": "year",
-    "type": "number",
-    "label": "Year",
-    "description": "Select the year to count up from or down to.",
-    "min": 2014,
-    "max": 2999,
-    "step": 1,
-    "default": 2014
+    "name": "imageGroup",
+    "type": "group",
+    "label": "Background image options.",
+    "fields": [
+      {
+        "name": "backgroundImage",
+        "type": "image",
+        "label": "Background image",
+        "optional": true,
+        "description": "An optional background image for the Counter."
+      },
+      {
+        "name": "xPos",
+        "type": "number",
+        "label": "X position of text.",
+        "description": "The X-position of the counter text relative to the picture, in percentages. F.ex: 50% to center the text.",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10,
+        "optional": true
+      },
+      {
+        "name": "yPos",
+        "type": "number",
+        "label": "Y position of text.",
+        "description": "The Y-position of the counter text relative to the picture, in percentages. F.ex: 50% to center the text.",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10,
+        "optional": true
+      }
+    ]
   },
-  {
-    "name": "backgroundImage",
-    "type": "image",
-    "label": "Background image",
-    "optional": true,
-    "description": "An optional background image for the Counter."
-  },
+
   {
     "label": "Show months",
     "name": "enableMonths",
     "type": "boolean",
-    "default": true,
+    "default": false,
     "optional": true
   },
   {

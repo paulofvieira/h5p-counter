@@ -1,3 +1,19 @@
-.h5p-image-background {
+.h5p-counter{
+  background-color: #FFF;
+}
+.h5p-image-counter-background {
   width: 100%;
+}
+.h5p-image-counter-container {
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+.h5p-counter-countdown-container {
+  position: relative;
+}
+.h5p-counter-on-image {
+  position: absolute;
+  text-align: center;
+  background: rgba(0,0,0,0.0);
 }
