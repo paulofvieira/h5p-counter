@@ -1,24 +1,36 @@
 var H5P = H5P || {};
 
 /**
- * Countdown module
+ * Counter module
  * @external {jQuery} $ H5P.jQuery
  */
 H5P.Counter = (function ($) {
   // CSS Classes:
   var MAIN_CONTAINER = 'h5p-counter';
+  var TITLE_CONTAINER = 'h5p-counter-title';
   var IMAGE_CONTAINER = 'h5p-counter-image-container';
-  var COUNTDOWN_CONTAINER = 'h5p-counter-countdown-container';
+  var COUNTING_CONTAINER = 'h5p-counter-counting-container';
 
-  // CSS subclasses
+  // CSS Subclasses:
   var IMAGE_BACKGROUND = 'h5p-counter-image-background';
   var OVER_IMAGE = 'h5p-counter-on-image';
+  var STOP_CLOCK_BAR = 'h5p-counter-stop-clock-bar';
+  var COUNTER_TEXT = 'h5p-counter-text';
+
+  // CSS Buttons:
+  var START_CLOCK_BUTTON = 'h5p-counter-start-button';
+  var RESTART_CLOCK_BUTTON = 'h5p-counter-restart-button';
+
+  // Clock types:
+  var COUNT_DOWN = 'countDown';
+  var COUNT_UP = 'countUp';
+  var STOP_CLOCK = 'stopClock';
 
   /**
    * Initialize module.
    * @param {Object} params Behavior settings
    * @param {Number} id Content identification
-   * @returns {Object} C Countdown instance
+   * @returns {Object} C Counter instance
    */
   function C(params, id) {
     this.$ = $(this);
@@ -28,9 +40,24 @@ H5P.Counter = (function ($) {
     this.params = $.extend({}, {
       title: "Christmas countdown",
       textField: "There is only @time left until christmas!",
-      countUp: false,
-      date: null,
-      imageGroup: null,
+      clockType: "countDown",
+      date: {
+        hour: 0,
+        minute: 0,
+        day: 24,
+        month: 12,
+        year: 2014
+      },
+      imageGroup: {
+        backgroundImage: null,
+        textOverlay: true,
+        xPos: 10,
+        yPos: 10
+      },
+      stopClockGroup: {
+        startClockButton: "Start",
+        restartClockButton: "Restart"
+      },
       enableMonths: false,
       enableWeeks: false,
       enableDays: true,
@@ -42,132 +69,223 @@ H5P.Counter = (function ($) {
     }, params);
   }
 
+  /**
+   * Attach function called by H5P framework to insert H5P content into page.
+   *
+   * @param {jQuery} $container
+   */
   C.prototype.attach = function ($container) {
     var self = this;
     self.$inner = $container.addClass(MAIN_CONTAINER)
-        .html('<div><div>' + self.params.title + '</div></div>')
+        .html('<div><div class=' + TITLE_CONTAINER + '>' + self.params.title + '</div></div>')
         .children();
 
     // set the date we're counting down to, or up from.
     var targetDate = new Date(self.params.date.year, parseInt(self.params.date.month)-1, self.params.date.day,
     self.params.date.hour, self.params.date.minute, 0, 0);
 
-    // variables for time units
-    var months, weeks, days, hours, minutes, seconds = 0;
-    self.$imageContainer = $('<div/>', {
-      'class': IMAGE_CONTAINER
+    self.$countingContainer = $('<div/>', {
+      class: COUNTING_CONTAINER
     }).appendTo(self.$inner);
 
-    self.$countdown = $('<div/>', {
-      'class': COUNTDOWN_CONTAINER
-    }).appendTo(self.$imageContainer);
+    self.$counting = $('<div/>', {
+      'class': COUNTER_TEXT
+    }).appendTo(self.$countingContainer);
 
-
-    if (self.params.imageGroup.backgroundImage && self.params.imageGroup.backgroundImage.path) {
-      attachImage();
-      self.$countdown.addClass(OVER_IMAGE)
-          .css({top: self.params.imageGroup.yPos + '%',
-            left: self.params.imageGroup.xPos + '%'});
-    }
+    //Attach image, if provided.
+    self.addImageTo(self.$inner);
 
     //replace variable chosenDate
     self.params.textField = self.params.textField.replace(/@chosenDate/g, targetDate.toDateString());
 
-    targetDate = targetDate.getTime();
-    // update the countdown timer every second.
-    var myCounter = setInterval(updateClock, 1000);
+    self.targetDateInSeconds = targetDate.getTime();
 
-    function updateClock() {
-      // find the amount of "seconds" between now and target
-      var currentDate = new Date().getTime();
-      //Counting up or down.
-      var secondsLeft = self.params.countUp ? (currentDate - targetDate) / 1000 :(targetDate - currentDate) / 1000;
-      if (secondsLeft <= 0) {
-        if (!self.params.countUp) {
-          secondsLeft = 0;
-        }
-        clearInterval(myCounter);
-        setFinishedText();
+    // update the counting timer every second.
+    self.myCounter = setInterval(function () {
+      return self.updateClock();
+    }, 1000);
+
+    //Attach stop clock functionality, if selected.
+    self.addStopClockTo(self.$countingContainer);
+  };
+
+  /**
+   * Gets the current time and updates the counter depending on what type of counter it is.
+   */
+  C.prototype.updateClock = function () {
+    // find the amount of seconds between now and target
+    var currentDateInSeconds = new Date().getTime();
+    var self = this;
+
+    //Counting up or down.
+    var secondsLeft = self.params.clockType === COUNT_DOWN ? (self.targetDateInSeconds- currentDateInSeconds) / 1000 : (currentDateInSeconds - self.targetDateInSeconds) / 1000;
+    if (secondsLeft <= 0) {
+      if (self.params.clockType === COUNT_DOWN) {
+        secondsLeft = 0;
+      }
+      clearInterval(self.myCounter);
+      self.setFinishedText();
+      return;
+    }
+
+    self.updateCountingText(secondsLeft);
+  };
+
+  /**
+   * Add stop clock bar and functionality to $container.
+   *
+   * @param {jQuery} $container Jquery container which the stop clock bar will be attached to.
+   */
+  C.prototype.addStopClockTo = function ($container) {
+    var self = this;
+    if (self.params.clockType !== STOP_CLOCK) {
+      return;
+    }
+    var isCounting = false;
+    clearInterval(self.myCounter);
+    self.updateCountingText(0);
+
+    self.$stopClockBar = $('<div/>', {
+      'class': STOP_CLOCK_BAR
+    }).appendTo($container);
+
+    //Make start and restart clock buttons with click functionality.
+    self.$startClock = $('<button/>', {
+      type: 'button',
+      text: self.params.stopClockGroup.startClockButton,
+      "class": START_CLOCK_BUTTON
+    }).click( function () {
+      if (isCounting) {
         return;
       }
-      var shortFormat = '';
-      var longFormat = '';
+      self.targetDate = new Date();
+      self.targetDateInSeconds = self.targetDate.getTime();
+      isCounting = true;
+      self.myStopClock = setInterval(function () {
+        return self.updateClock();
+      }, 1000);
+    }).appendTo(self.$stopClockBar);
 
-      if (self.params.enableMonths) {
-        months = parseInt(secondsLeft / 2592000);
-        secondsLeft = secondsLeft % 2592000;
-        longFormat += months+' Months, ';
+    self.$restartClock = $('<button/>', {
+      type: 'button',
+      text: self.params.stopClockGroup.restartClockButton,
+      "class": RESTART_CLOCK_BUTTON
+    }).click( function () {
+      isCounting = false;
+      clearInterval(self.myStopClock);
+      self.updateCountingText(0);
+    }).appendTo(self.$stopClockBar);
+  };
 
-        shortFormat += months+'m, ';
-      }
-
-      if (self.params.enableWeeks) {
-        weeks = parseInt(secondsLeft / 604800);
-        secondsLeft = secondsLeft % 604800;
-        longFormat += weeks+' Weeks, ';
-        shortFormat += weeks+'w, ';
-      }
-
-      if (self.params.enableDays) {
-        days = parseInt(secondsLeft / 86400);
-        secondsLeft = secondsLeft % 86400;
-        longFormat += days+' Days, ';
-        shortFormat += days+'d, ';
-      }
-
-      if (self.params.enableHours) {
-        hours = parseInt(secondsLeft / 3600);
-        secondsLeft = secondsLeft % 3600;
-        longFormat += hours+' Hours, ';
-        shortFormat += hours+'h, ';
-      }
-
-      if (self.params.enableMinutes) {
-        minutes = parseInt(secondsLeft / 60);
-        secondsLeft = secondsLeft % 60;
-        longFormat += minutes+' Minutes';
-        shortFormat += minutes+'m';
-        if (self.params.enableSeconds) {
-          longFormat += ' and ';
-          shortFormat += ', ';
-        }
-      }
-
-      if (self.params.enableSeconds) {
-        seconds = parseInt(secondsLeft);
-        longFormat += seconds+' Seconds ';
-        shortFormat += seconds+'s '
-      }
-      var chosenFormat = self.params.enableShortFormat ? shortFormat : longFormat;
-      //Replace variables in string.
-      var htmlCounter = self.params.textField.replace(/@counter/g, chosenFormat)
-          .replace(/@months/g, months)
-          .replace(/@weeks/g, weeks)
-          .replace(/@days/g, days)
-          .replace(/@hours/g, hours)
-          .replace(/@minutes/g, minutes)
-          .replace(/@seconds/g, seconds);
-
-      // format countdown string + set tag value
-      self.$countdown.html(htmlCounter);
+  /**
+   * Set finished text in the counting container, if provided.
+   */
+  C.prototype.setFinishedText = function () {
+    var self = this;
+    //When counting is done, display finished text, if it has been specified.
+    if (self.params.finishedText !== '') {
+      self.$counting.html(self.params.finishedText);
     }
+  };
 
-    function setFinishedText() {
-      //When countdown is done, display finished text, if it has been specified.
-      if (self.params.finishedText !== '') {
-        self.$countdown.html(self.params.finishedText);
-      }
+  /**
+   * Adds image to the provided container.
+   *
+   * @param {jQuery} $container jQuery container which the image will be appended to.
+   */
+  C.prototype.addImageTo = function ($container) {
+    var self = this;
+    if (self.params.imageGroup.backgroundImage === null) {
+      return;
     }
+    self.$imageContainer = $('<div/>', {
+      'class': IMAGE_CONTAINER
+    }).appendTo($container);
 
-    function attachImage() {
+    if (self.params.imageGroup.backgroundImage && self.params.imageGroup.backgroundImage.path) {
       self.initialWidth = $container.width();
       var height = (self.initialWidth/self.params.imageGroup.backgroundImage.width)*self.params.imageGroup.backgroundImage.height;
+
       this.$image = $('<img/>', {
         'class': IMAGE_BACKGROUND,
         src: H5P.getPath(self.params.imageGroup.backgroundImage.path, self.id)
       }).css({width: self.initialWidth, height: height}).appendTo(self.$imageContainer);
+
+      if (self.params.imageGroup.textOverlay) {
+        self.$countingContainer.addClass(OVER_IMAGE)
+            .css({top: self.params.imageGroup.yPos + '%',
+              left: self.params.imageGroup.xPos + '%'})
+            .appendTo(self.$imageContainer);
+      }
     }
   };
+
+  /**
+   * Updates the counting text with the provided seconds, and divides these seconds into
+   * correct time units, and puts the resulting string into self.$counting container.
+   *
+   * @param {Number} secondsLeft The amount of seconds to do calculations on.
+   */
+  C.prototype.updateCountingText = function (secondsLeft) {
+    var shortFormat = '';
+    var longFormat = '';
+    var self = this;
+
+    /**
+     * Divides seconds left on the given time unit, returns the amount of the given time unit,
+     * and puts the remainder in secondsLeft. Also adds the provided format to your format strings.
+     *
+     * @param {Boolean} isEnabled Decides whether the given time unit is enabled for this instance.
+     * @param {Number} secondsPerUnit How many seconds the given time unit contains.
+     * @param {String} longFormat Long format of the time unit. f.ex: "Months, ".
+     * @param {String} shortFormat Short format of the time unit. f.ex: "m, ".
+     *
+     * @returns {Number} Amount of time unit in seconds left.
+     */
+    function addTimeUnit(isEnabled, secondsPerUnit, longFormatString, shortFormatString) {
+      if (!isEnabled) {
+        return 0;
+      }
+      var timeUnitAmount = parseInt(secondsLeft / secondsPerUnit)
+      secondsLeft = secondsLeft % secondsPerUnit;
+      if (timeUnitAmount > 0) {
+        longFormat += timeUnitAmount + longFormatString;
+        shortFormat += timeUnitAmount + shortFormatString;
+      }
+      return timeUnitAmount;
+    }
+
+    //Does calculations on the provided time units.
+    var months = addTimeUnit(self.params.enableMonths, 2592000, ' Months, ', 'm, ');
+    var weeks = addTimeUnit(self.params.enableWeeks, 604800, ' Weeks, ', 'w, ');
+    var days = addTimeUnit(self.params.enableDays, 86400, ' Days, ', 'd, ');
+    var hours = addTimeUnit(self.params.enableHours, 3600, ' Hours, ', 'h, ');
+    var minutes = addTimeUnit(self.params.enableMinutes, 60, ' Minutes','m');
+    if (self.params.enableSeconds && (secondsLeft > 0) && self.params.enableMinutes && (minutes > 0)) {
+      longFormat += ' and ';
+      shortFormat += ', ';
+    }
+    var seconds = addTimeUnit(self.params.enableSeconds, 1, ' Seconds','s');
+
+    if (shortFormat === '' && longFormat === '') {
+      shortFormat = '0s';
+      longFormat = '0 Seconds';
+    }
+
+    var chosenFormat = self.params.enableShortFormat ? shortFormat : longFormat;
+    //Replace variables in string.
+    var htmlCounter = self.params.textField.replace(/@counter/g, chosenFormat)
+        .replace(/@months/g, months)
+        .replace(/@weeks/g, weeks)
+        .replace(/@days/g, days)
+        .replace(/@hours/g, hours)
+        .replace(/@minutes/g, minutes)
+        .replace(/@seconds/g, seconds);
+
+    // set html of $counting object to htmlCounter
+    self.$counting.html(htmlCounter);
+  };
+
 
     return C;
 })(H5P.jQuery);

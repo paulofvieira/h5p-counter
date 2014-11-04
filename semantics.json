@@ -25,16 +25,28 @@
       "h2",
       "h3",
       "hr"
-    ],
-    "optional": true
+    ]
   },
   {
-    "label": "Count Up",
-    "name": "countUp",
-    "type": "boolean",
-    "description" : "Check to count up from date, instead of down to date.",
-    "default": false,
-    "optional": false
+    "name": "clockType",
+    "label": "Select type of counter",
+    "type": "select",
+    "description": "Select the type of counter to make.",
+    "options": [
+      {
+      "label": "Countdown timer",
+      "value": "countDown"
+      },
+      {
+        "label": "Count up, counter",
+        "value": "countUp"
+      },
+      {
+        "label": "Stop clock",
+        "value": "stopClock"
+      }
+    ],
+    "default": "countDown"
   },
   {
     "name": "date",
@@ -149,8 +161,15 @@
         "name": "backgroundImage",
         "type": "image",
         "label": "Background image",
-        "optional": true,
-        "description": "An optional background image for the Counter."
+        "description": "An optional background image for the Counter.",
+        "optional": true
+      },
+      {
+        "label": "Show text on top of picture",
+        "name": "textOverlay",
+        "type": "boolean",
+        "default": true,
+        "optional": true
       },
       {
         "name": "xPos",
@@ -176,7 +195,27 @@
       }
     ]
   },
-
+  {
+    "name": "stopClockGroup",
+    "type": "group",
+    "label": "Stop clock options.",
+    "fields": [
+      {
+        "label": "Text for \"Start\" timer button",
+        "name": "startClockButton",
+        "type": "text",
+        "default": "Start",
+        "optional": true
+      },
+      {
+        "label": "Text for \"Restart\" timer button",
+        "name": "restartClockButton",
+        "type": "text",
+        "default": "Restart",
+        "optional": true
+      }
+    ]
+  },
   {
     "label": "Show months",
     "name": "enableMonths",

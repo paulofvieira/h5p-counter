@@ -1,7 +1,7 @@
 H5P Counter
 ==========
 
-Set up a counter to count down to, or up to a special occasion.
+Set up a counter that can work as a countdown, count up or stop clock.
 
 ## License
 
