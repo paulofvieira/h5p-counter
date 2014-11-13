@@ -11,7 +11,7 @@
     "label": "Textfield",
     "name": "textField",
     "type": "text",
-    "placeholder": "You chose date @chosenDate. There is @counter left until that date.",
+    "placeholder": "@counter left until christmas! Merry christmas!",
     "description": "Text to go with the counter, @counter specifies the time variable. Other variables: @chosenDate, @months, @weeks, @days, @hours, @minutes, @seconds.",
     "widget": "html",
     "enterMode": "p",
