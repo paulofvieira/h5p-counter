@@ -17,17 +17,5 @@
     {
       "path": "counter.js"
     }
-  ],
-  "preloadedDependencies": [
-    {
-      "machineName": "FontAwesome",
-      "majorVersion": 4,
-      "minorVersion": 1
-    },
-    {
-      "machineName": "H5P.JoubelUI",
-      "majorVersion": 1,
-      "minorVersion": 0
-    }
   ]
 }
