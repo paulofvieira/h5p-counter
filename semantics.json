@@ -145,10 +145,10 @@
         "type": "number",
         "label": "Year",
         "description": "Select the year to count up from or down to.",
-        "min": 2014,
+        "min": 0,
         "max": 2999,
         "step": 1,
-        "default": 2014
+        "default": 2015
       }
     ]
   },
@@ -205,6 +205,13 @@
         "name": "startClockButton",
         "type": "text",
         "default": "Start",
+        "optional": true
+      },
+      {
+        "label": "Text for \"Pause\" timer button",
+        "name": "pauseClockButton",
+        "type": "text",
+        "default": "Pause",
         "optional": true
       },
       {

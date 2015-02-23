@@ -1,3 +1,4 @@
+/** @namespace H5P */
 var H5P = H5P || {};
 
 /**
@@ -19,11 +20,11 @@ H5P.Counter = (function ($) {
 
   // CSS Buttons:
   var START_CLOCK_BUTTON = 'h5p-counter-start-button';
+  var PAUSE_CLOCK_BUTTON = 'h5p-counter-pause-button';
   var RESTART_CLOCK_BUTTON = 'h5p-counter-restart-button';
 
   // Clock types:
   var COUNT_DOWN = 'countDown';
-  var COUNT_UP = 'countUp';
   var STOP_CLOCK = 'stopClock';
 
   /**
@@ -32,7 +33,7 @@ H5P.Counter = (function ($) {
    * @param {Number} id Content identification
    * @returns {Object} C Counter instance
    */
-  function C(params, id) {
+  function Counter(params, id) {
     this.$ = $(this);
     this.id = id;
 
@@ -56,6 +57,7 @@ H5P.Counter = (function ($) {
       },
       stopClockGroup: {
         startClockButton: "Start",
+        pauseClockButton: "Pause",
         restartClockButton: "Restart"
       },
       enableMonths: false,
@@ -74,18 +76,18 @@ H5P.Counter = (function ($) {
    *
    * @param {jQuery} $container
    */
-  C.prototype.attach = function ($container) {
+  Counter.prototype.attach = function ($container) {
     var self = this;
     self.$inner = $container.addClass(MAIN_CONTAINER)
         .html('<div><div class=' + TITLE_CONTAINER + '>' + self.params.title + '</div></div>')
         .children();
 
     // set the date we're counting down to, or up from.
-    var targetDate = new Date(self.params.date.year, parseInt(self.params.date.month)-1, self.params.date.day,
-    self.params.date.hour, self.params.date.minute, 0, 0);
+    var targetDate = new Date(self.params.date.year, parseInt(self.params.date.month, 10) - 1, self.params.date.day,
+      self.params.date.hour, self.params.date.minute, 0, 0);
 
     self.$countingContainer = $('<div/>', {
-      class: COUNTING_CONTAINER
+      'class': COUNTING_CONTAINER
     }).appendTo(self.$inner);
 
     self.$counting = $('<div/>', {
@@ -112,13 +114,13 @@ H5P.Counter = (function ($) {
   /**
    * Gets the current time and updates the counter depending on what type of counter it is.
    */
-  C.prototype.updateClock = function () {
+  Counter.prototype.updateClock = function () {
     // find the amount of seconds between now and target
     var currentDateInSeconds = new Date().getTime();
     var self = this;
 
     //Counting up or down.
-    var secondsLeft = self.params.clockType === COUNT_DOWN ? (self.targetDateInSeconds- currentDateInSeconds) / 1000 : (currentDateInSeconds - self.targetDateInSeconds) / 1000;
+    var secondsLeft = self.params.clockType === COUNT_DOWN ? (self.targetDateInSeconds - currentDateInSeconds) / 1000 : (currentDateInSeconds - self.targetDateInSeconds) / 1000;
     if (secondsLeft <= 0) {
       if (self.params.clockType === COUNT_DOWN) {
         secondsLeft = 0;
@@ -136,7 +138,7 @@ H5P.Counter = (function ($) {
    *
    * @param {jQuery} $container Jquery container which the stop clock bar will be attached to.
    */
-  C.prototype.addStopClockTo = function ($container) {
+  Counter.prototype.addStopClockTo = function ($container) {
     var self = this;
     if (self.params.clockType !== STOP_CLOCK) {
       return;
@@ -151,36 +153,59 @@ H5P.Counter = (function ($) {
 
     //Make start and restart clock buttons with click functionality.
     self.$startClock = $('<button/>', {
-      type: 'button',
-      text: self.params.stopClockGroup.startClockButton,
-      "class": START_CLOCK_BUTTON
-    }).click( function () {
-      if (isCounting) {
-        return;
-      }
+      'type': 'button',
+      'text': self.params.stopClockGroup.startClockButton,
+      'class': START_CLOCK_BUTTON
+    }).click(function () {
       self.targetDate = new Date();
+      if (isCounting) {
+        self.targetDate.setTime(self.targetDate.getTime() - self.elapsedTime);
+      }
       self.targetDateInSeconds = self.targetDate.getTime();
       isCounting = true;
       self.myStopClock = setInterval(function () {
         return self.updateClock();
       }, 1000);
+      $(this).hide();
+      self.$restartClock.show();
+      self.$pauseClock.show();
     }).appendTo(self.$stopClockBar);
 
+    self.$pauseClock = $('<button/>', {
+      'type': 'button',
+      'text': self.params.stopClockGroup.pauseClockButton,
+      'class': PAUSE_CLOCK_BUTTON
+    }).hide().
+      click(function () {
+        if (isCounting) {
+          clearInterval(self.myStopClock);
+          var currentTime = new Date().getTime();
+          self.elapsedTime = currentTime - self.targetDateInSeconds;
+          $(this).hide();
+          self.$startClock.show();
+        }
+      }).appendTo(self.$stopClockBar);
+
     self.$restartClock = $('<button/>', {
-      type: 'button',
-      text: self.params.stopClockGroup.restartClockButton,
-      "class": RESTART_CLOCK_BUTTON
-    }).click( function () {
-      isCounting = false;
-      clearInterval(self.myStopClock);
-      self.updateCountingText(0);
-    }).appendTo(self.$stopClockBar);
+      'type': 'button',
+      'text': self.params.stopClockGroup.restartClockButton,
+      'class': RESTART_CLOCK_BUTTON
+    }).hide()
+      .click(function () {
+        isCounting = false;
+        clearInterval(self.myStopClock);
+        self.updateCountingText(0);
+        $(this).hide();
+        self.$pauseClock.hide();
+        self.$startClock.show();
+        self.elapsedTime = 0;
+      }).appendTo(self.$stopClockBar);
   };
 
   /**
    * Set finished text in the counting container, if provided.
    */
-  C.prototype.setFinishedText = function () {
+  Counter.prototype.setFinishedText = function () {
     var self = this;
     //When counting is done, display finished text, if it has been specified.
     if (self.params.finishedText !== '') {
@@ -193,7 +218,7 @@ H5P.Counter = (function ($) {
    *
    * @param {jQuery} $container jQuery container which the image will be appended to.
    */
-  C.prototype.addImageTo = function ($container) {
+  Counter.prototype.addImageTo = function ($container) {
     var self = this;
     if (self.params.imageGroup.backgroundImage === null) {
       return;
@@ -204,12 +229,13 @@ H5P.Counter = (function ($) {
 
     if (self.params.imageGroup.backgroundImage && self.params.imageGroup.backgroundImage.path) {
       self.initialWidth = $container.width();
-      var height = (self.initialWidth/self.params.imageGroup.backgroundImage.width)*self.params.imageGroup.backgroundImage.height;
+      var height = (self.initialWidth / self.params.imageGroup.backgroundImage.width) * self.params.imageGroup.backgroundImage.height;
 
-      this.$image = $('<img/>', {
+      $('<img/>', {
         'class': IMAGE_BACKGROUND,
-        src: H5P.getPath(self.params.imageGroup.backgroundImage.path, self.id)
-      }).css({width: self.initialWidth, height: height}).appendTo(self.$imageContainer);
+        'src': H5P.getPath(self.params.imageGroup.backgroundImage.path, self.id)
+      }).css({width: self.initialWidth, height: height})
+        .appendTo(self.$imageContainer);
 
       if (self.params.imageGroup.textOverlay) {
         self.$countingContainer.addClass(OVER_IMAGE)
@@ -226,7 +252,7 @@ H5P.Counter = (function ($) {
    *
    * @param {Number} secondsLeft The amount of seconds to do calculations on.
    */
-  C.prototype.updateCountingText = function (secondsLeft) {
+  Counter.prototype.updateCountingText = function (secondsLeft) {
     var shortFormat = '';
     var longFormat = '';
     var self = this;
@@ -237,8 +263,8 @@ H5P.Counter = (function ($) {
      *
      * @param {Boolean} isEnabled Decides whether the given time unit is enabled for this instance.
      * @param {Number} secondsPerUnit How many seconds the given time unit contains.
-     * @param {String} longFormat Long format of the time unit. f.ex: "Months, ".
-     * @param {String} shortFormat Short format of the time unit. f.ex: "m, ".
+     * @param {String} longFormatString Long format of the time unit. f.ex: "Months, ".
+     * @param {String} shortFormatString Short format of the time unit. f.ex: "m, ".
      *
      * @returns {Number} Amount of time unit in seconds left.
      */
@@ -246,7 +272,7 @@ H5P.Counter = (function ($) {
       if (!isEnabled) {
         return 0;
       }
-      var timeUnitAmount = parseInt(secondsLeft / secondsPerUnit)
+      var timeUnitAmount = parseInt(secondsLeft / secondsPerUnit, 10);
       secondsLeft = secondsLeft % secondsPerUnit;
       if (timeUnitAmount > 0) {
         longFormat += timeUnitAmount + longFormatString;
@@ -260,12 +286,12 @@ H5P.Counter = (function ($) {
     var weeks = addTimeUnit(self.params.enableWeeks, 604800, ' Weeks, ', 'w, ');
     var days = addTimeUnit(self.params.enableDays, 86400, ' Days, ', 'd, ');
     var hours = addTimeUnit(self.params.enableHours, 3600, ' Hours, ', 'h, ');
-    var minutes = addTimeUnit(self.params.enableMinutes, 60, ' Minutes','m');
+    var minutes = addTimeUnit(self.params.enableMinutes, 60, ' Minutes', 'm');
     if (self.params.enableSeconds && (secondsLeft > 0) && self.params.enableMinutes && (minutes > 0)) {
       longFormat += ' and ';
       shortFormat += ', ';
     }
-    var seconds = addTimeUnit(self.params.enableSeconds, 1, ' Seconds','s');
+    var seconds = addTimeUnit(self.params.enableSeconds, 1, ' Seconds', 's');
 
     if (shortFormat === '' && longFormat === '') {
       shortFormat = '0s';
@@ -275,17 +301,17 @@ H5P.Counter = (function ($) {
     var chosenFormat = self.params.enableShortFormat ? shortFormat : longFormat;
     //Replace variables in string.
     var htmlCounter = self.params.textField.replace(/@counter/g, chosenFormat)
-        .replace(/@months/g, months)
-        .replace(/@weeks/g, weeks)
-        .replace(/@days/g, days)
-        .replace(/@hours/g, hours)
-        .replace(/@minutes/g, minutes)
-        .replace(/@seconds/g, seconds);
+        .replace(/@months/g, String(months))
+        .replace(/@weeks/g, String(weeks))
+        .replace(/@days/g, String(days))
+        .replace(/@hours/g, String(hours))
+        .replace(/@minutes/g, String(minutes))
+        .replace(/@seconds/g, String(seconds));
 
     // set html of $counting object to htmlCounter
     self.$counting.html(htmlCounter);
   };
 
 
-    return C;
-})(H5P.jQuery);
+  return Counter;
+}(H5P.jQuery));
