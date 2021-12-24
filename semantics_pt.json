@@ -1,0 +1,285 @@
+[
+  {
+    "label": "Título do Contador",
+    "name": "title",
+    "type": "text",
+    "placeholder": "Contador de Evento!",
+    "description": "Escolha um título para o contador.",
+    "optional": true
+  },
+  {
+    "label": "Texto",
+    "name": "textField",
+    "type": "text",
+    "placeholder": "@counter para o Ano Novo! Feliz Ano novo!",
+    "description": "Texto a visualizar com o contador de tempo, @counter especifica a variável tempo. Outras variáveis: @chosenDate, @months, @weeks, @days, @hours, @minutes, @seconds.",
+    "widget": "html",
+    "enterMode": "p",
+    "tags": [
+      "strong",
+      "em",
+      "u",
+      "a",
+      "ul",
+      "ol",
+      "h2",
+      "h3",
+      "hr"
+    ]
+  },
+  {
+    "name": "clockType",
+    "label": "Selecionar tipo de contador",
+    "type": "select",
+    "description": "Selecionar tipo de funcionamento do contador.",
+    "options": [
+      {
+      "label": "Contagem decrescente",
+      "value": "countDown"
+      },
+      {
+        "label": "Contagem crescente",
+        "value": "countUp"
+      },
+      {
+        "label": "Contagem em Pausa",
+        "value": "stopClock"
+      }
+    ],
+    "default": "countDown"
+  },
+  {
+    "name": "date",
+    "type": "group",
+    "label": "Data decrescente a contar até, ou data crescente desde.",
+    "fields": [
+      {
+        "name": "hour",
+        "type": "number",
+        "label": "Hora",
+        "description": "Selecionar a hora da data pretendida, formato 24h.",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 0
+      },
+      {
+        "name": "minute",
+        "type": "number",
+        "label": "Minutos",
+        "description": "Selecionar o minuto da data pretendida.",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "default": 0
+      },
+      {
+        "name": "day",
+        "type": "number",
+        "label": "Dia do mês",
+        "description": "Selecionar o dia do mês.",
+        "min": 1,
+        "max": 31,
+        "step": 1,
+        "default": 24
+      },
+      {
+        "name": "month",
+        "label": "Selecionar o mês",
+        "type": "select",
+        "description": "Selecionar o mês a contar de forma crescente,desde, ou crescente até.",
+        "options": [
+          {
+            "label": "Janeiro",
+            "value": "01"
+          },
+          {
+            "label": "Fevereiro",
+            "value": "02"
+          },
+          {
+            "label": "Março",
+            "value": "03"
+          },
+          {
+            "label": "Abril",
+            "value": "04"
+          },
+          {
+            "label": "Maio",
+            "value": "05"
+          },
+          {
+            "label": "Junho",
+            "value": "06"
+          },
+          {
+            "label": "Julho",
+            "value": "07"
+          },
+          {
+            "label": "Agosto",
+            "value": "08"
+          },
+          {
+            "label": "Setembro",
+            "value": "09"
+          },
+          {
+            "label": "Outubro",
+            "value": "10"
+          },
+          {
+            "label": "Novembro",
+            "value": "11"
+          },
+          {
+            "label": "Dezembro",
+            "value": "12"
+          }
+        ],
+        "default": "12"
+      },
+      {
+        "name": "year",
+        "type": "number",
+        "label": "Ano",
+        "description": "Selecionar o ano a contar desde, de forma crescente, ou até, de forma decrescente.",
+        "min": 0,
+        "max": 2999,
+        "step": 1,
+        "default": 2015
+      }
+    ]
+  },
+  {
+    "name": "imageGroup",
+    "type": "group",
+    "label": "Opções da imagem de fundo.",
+    "fields": [
+      {
+        "name": "backgroundImage",
+        "type": "image",
+        "label": "Imagem de fundo",
+        "description": "Adicionar, como opção, uma imagem de fundo.",
+        "optional": true
+      },
+      {
+        "label": "Mostrar texto no topo da imagem",
+        "name": "textOverlay",
+        "type": "boolean",
+        "default": true,
+        "optional": true
+      },
+      {
+        "name": "xPos",
+        "type": "number",
+        "label": "Posição do Texto, Eixo X.",
+        "description": "Posição do texto do contador, em relação à imagem, eixo X, em percentagem. F.ex: 50% para centrar o texto.",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10,
+        "optional": true
+      },
+      {
+        "name": "yPos",
+        "type": "number",
+        "label": "Posição do Texto, Eixo Y.",
+        "description": "Posição do texto do contador, em relação à imagem, eixo Y, em percentagem F.ex: 50% para centrar o texto.",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 10,
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "stopClockGroup",
+    "type": "group",
+    "label": "Opções do contador em pausa.",
+    "fields": [
+      {
+        "label": "Texto para o botão do contador \"Iniciar\"",
+        "name": "startClockButton",
+        "type": "text",
+        "default": "Iniciar",
+        "optional": true
+      },
+      {
+        "label": "Texto para o botão do contador \"Pausa\" ",
+        "name": "pauseClockButton",
+        "type": "text",
+        "default": "Pausa",
+        "optional": true
+      },
+      {
+        "label": "Texto para o botão do contador \"Recomeçar\" ",
+        "name": "restartClockButton",
+        "type": "text",
+        "default": "Recomeçar",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "label": "Mostrar meses",
+    "name": "enableMonths",
+    "type": "boolean",
+    "default": false,
+    "optional": true
+  },
+  {
+    "label": "Mostrar semanas",
+    "name": "enableWeeks",
+    "type": "boolean",
+    "default": false,
+    "optional": true
+  },
+  {
+    "label": "Mostrar dias",
+    "name": "enableDays",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Mostrar horas",
+    "name": "enableHours",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Mostrar minutos",
+    "name": "enableMinutes",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Mostrar segundos",
+    "name": "enableSeconds",
+    "type": "boolean",
+    "default": true,
+    "optional": true
+  },
+  {
+    "label": "Formato curto",
+    "description": "Mostra o formato curto da data, por exemplo: Faltam 2d, 3h and 4m 5s.",
+    "name": "enableShortFormat",
+    "type": "boolean",
+    "default": false,
+    "optional": true
+  },
+  {
+    "label": "Texto a mostrar no final da contagem decrescente",
+    "name": "finishedText",
+    "type": "text",
+    "widget": "textarea",
+    "placeholder": "Viva, a contagem decrescente terminou!",
+    "description": "Este texto é mostrado quando a contagem decrescente terminar.",
+    "optional": true
+  }
+]
