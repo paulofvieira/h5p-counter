@@ -1,6 +1,6 @@
-{
-  "title": "Counter",
-  "description": "Set up a counter that can work as a countdown, count up or stop clock.",
+r{
+  "title": "Temporizador",
+  "description": "Configura um temporizador, em contagem decrescente, crescente, ou como cronómetro em pausa.",
   "majorVersion": 1,
   "minorVersion": 0,
   "patchVersion": 0,
