@@ -1,10 +1,10 @@
 [
   {
-    "label": "Título do Contador",
+    "label": "Título do Temporizador",
     "name": "title",
     "type": "text",
-    "placeholder": "Contador de Evento!",
-    "description": "Escolha um título para o contador.",
+    "placeholder": "Temporizador de Evento!",
+    "description": "Escolha um título para o temporizador.",
     "optional": true
   },
   {
@@ -12,7 +12,7 @@
     "name": "textField",
     "type": "text",
     "placeholder": "@counter para o Ano Novo! Feliz Ano novo!",
-    "description": "Texto a visualizar com o contador de tempo, @counter especifica a variável tempo. Outras variáveis: @chosenDate, @months, @weeks, @days, @hours, @minutes, @seconds.",
+    "description": "Texto a visualizar com o temporizador, @counter especifica a variável tempo. Outras variáveis: @chosenDate, @months, @weeks, @days, @hours, @minutes, @seconds.",
     "widget": "html",
     "enterMode": "p",
     "tags": [
@@ -29,9 +29,9 @@
   },
   {
     "name": "clockType",
-    "label": "Selecionar tipo de contador",
+    "label": "Selecionar tipo de temporizador",
     "type": "select",
-    "description": "Selecionar tipo de funcionamento do contador.",
+    "description": "Selecionar tipo de funcionamento do temporizador.",
     "options": [
       {
       "label": "Contagem decrescente",
@@ -42,7 +42,7 @@
         "value": "countUp"
       },
       {
-        "label": "Contagem em Pausa",
+        "label": "Cronómetro em Pausa",
         "value": "stopClock"
       }
     ],
@@ -175,7 +175,7 @@
         "name": "xPos",
         "type": "number",
         "label": "Posição do Texto, Eixo X.",
-        "description": "Posição do texto do contador, em relação à imagem, eixo X, em percentagem. F.ex: 50% para centrar o texto.",
+        "description": "Posição do texto do contador, em relação à imagem, eixo X, em percentagem. Por ex: 50% para centrar o texto.",
         "min": 0,
         "max": 100,
         "step": 1,
@@ -186,7 +186,7 @@
         "name": "yPos",
         "type": "number",
         "label": "Posição do Texto, Eixo Y.",
-        "description": "Posição do texto do contador, em relação à imagem, eixo Y, em percentagem F.ex: 50% para centrar o texto.",
+        "description": "Posição do texto do contador, em relação à imagem, eixo Y, em percentagem Por ex: 50% para centrar o texto.",
         "min": 0,
         "max": 100,
         "step": 1,
@@ -198,24 +198,24 @@
   {
     "name": "stopClockGroup",
     "type": "group",
-    "label": "Opções do contador em pausa.",
+    "label": "Opções do Cronómetro em pausa.",
     "fields": [
       {
-        "label": "Texto para o botão do contador \"Iniciar\"",
+        "label": "Texto para o botão do temporizador \"Iniciar\"",
         "name": "startClockButton",
         "type": "text",
         "default": "Iniciar",
         "optional": true
       },
       {
-        "label": "Texto para o botão do contador \"Pausa\" ",
+        "label": "Texto para o botão do temporizador \"Pausa\" ",
         "name": "pauseClockButton",
         "type": "text",
         "default": "Pausa",
         "optional": true
       },
       {
-        "label": "Texto para o botão do contador \"Recomeçar\" ",
+        "label": "Texto para o botão do temporizador \"Recomeçar\" ",
         "name": "restartClockButton",
         "type": "text",
         "default": "Recomeçar",
