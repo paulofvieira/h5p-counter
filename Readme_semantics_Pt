@@ -1,1 +1,1 @@
-Just delete the original file, rename semantics_pt.json to semantics.json to heva the content in pt_pt
+Just delete the original file, rename semantics_pt.json to semantics.json to have the content in pt_pt. Then pack the library whith the h5p command line.
